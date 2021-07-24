@@ -51,3 +51,18 @@ workflows:
             branches:
               only: master
           context: DOCKER_CREDS
+  build-on-schedule:
+    jobs:
+      - build
+      - publish-latest:
+          requires:
+            - build
+          context: DOCKER_CREDS
+    # The cron format is:
+    # min (0-59) hour (0-23) monthday (1-31) month (1-12) weekday (0-6, 0=Sun)
+    triggers:
+      - schedule:
+          cron: "20 20 * * *"
+          filters:
+            branches:
+              only: master
